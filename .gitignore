@@ -1,1 +1,5 @@
 /crypto
+/api/adapter/api/__pycache__
+/api/core/extract/__pycache__
+/api/utils/__pycache__
+/api/__pycache__
