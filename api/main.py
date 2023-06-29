@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
-from core.extract.controller import extract_router
+from controller.extract import extract_router
 
 app = FastAPI()
 app.include_router(extract_router)

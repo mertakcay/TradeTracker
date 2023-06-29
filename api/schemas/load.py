@@ -16,15 +16,15 @@ class currencyInformation(Base):
     exchange = Column(String)
     # first parameter is name of table of db
     # second parameter is created object name of relationship in object
-    currencyHistory = relationship("currencyHistory", back_populates="information") 
+    currency_history = relationship("currencyHistory", back_populates="information") 
 
 
 class currencyHistory(Base):
     __tablename__ = "currency_history"
 
     id = Column(Integer, primary_key=True, index=True)
-    pair = Column(String, ForeignKey( ForeignKey("currency_information.pair")))
-    time_range = Column(str)
+    pair = Column(String, ForeignKey("currency_information.pair"))
+    time_range = Column(String)
     timestamp = Column(DateTime)
     open_price = Column(Float)
     high_price = Column(Float)
@@ -32,6 +32,7 @@ class currencyHistory(Base):
     close_price = Column(Float)
     derivatives_volume = Column(Float)
     trading_volume = Column(Float)
+    complete = Column(Boolean)
     # first parameter is name of table of db
     # second parameter is created object name of relationship in object
-    information = relationship("currencyInformation", back_populates="currencyHistory")
+    information = relationship("currencyInformation", back_populates="currency_history")

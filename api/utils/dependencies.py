@@ -1,4 +1,6 @@
 # Dependency
+from .sqlalchemy import SessionLocal
+
 def get_db():
     db = SessionLocal()
     try:

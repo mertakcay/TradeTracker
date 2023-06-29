@@ -5,12 +5,12 @@ sys.path.append(two_up)
 
 import requests
 import pandas as pd
-from core.extract.models import Crypto
+from models.extract import Crypto, cryptoHistory
 from datetime import datetime
 
 
 
-class currencyTicker():
+class currencyTicker(object):
     
     def __init__(self,timestamp = "15m",currency_list=["BTC-USDT"], time_range=2):
         self._timestamp = timestamp
@@ -18,7 +18,6 @@ class currencyTicker():
         self._time_ramge = time_range
         self._url = 'https://www.okx.com'
         self._endpoint = "/api/v5/market/candles"
-        self._results = self.get_currencies_ticker()
         
         
     def get_results(self):
@@ -32,12 +31,20 @@ class currencyTicker():
             ticker['unixTimestamp'][timestamp] = datetime.utcfromtimestamp(int(ticker['unixTimestamp'][timestamp])/1000).strftime('%Y-%m-%d %H:%M:%S') 
             ticker['unixTimestamp'][timestamp] = datetime.strptime(ticker['unixTimestamp'][timestamp], '%Y-%m-%d %H:%M:%S')
         ticker['Trading Volume'] = pd.to_numeric(ticker['Trading Volume'])
-        crypto = Crypto(name = currency, current_time = self._timestamp,timestamp = ticker['unixTimestamp'].to_list(),
-                        open_price = ticker['Open Price'].to_list(), high_price = ticker['High Price'].to_list(),
-                        low_price = ticker['Low Price'].to_list(), close_price = ticker['Close Price'].to_list(),
-                        derivatives_volume = ticker['Derivatives Volume'].to_list(), trading_volume = ticker['Trading Volume'].to_list(),
-                        complete = ticker["isCompleted"].to_list())
-        print(crypto)
+        
+        history = list()
+        for idx, tick in ticker.iterrows():
+            
+            crypto_history = cryptoHistory(timestamp = tick['unixTimestamp'],
+                            open_price = tick['Open Price'], high_price = tick['High Price'],
+                            low_price = tick['Low Price'], close_price = tick['Close Price'],
+                            derivatives_volume = tick['Derivatives Volume'], trading_volume = tick['Trading Volume'],
+                            complete = tick["isCompleted"])
+            
+            history.append(crypto_history)
+            
+        crypto = Crypto(name = currency, current_time = self._timestamp, crypto_history = history)
+
         return crypto
     
     def get_currencies_ticker(self):
